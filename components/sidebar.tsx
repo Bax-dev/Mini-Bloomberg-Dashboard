@@ -28,7 +28,7 @@ export default function Sidebar({ open, onOpenChange }: SidebarProps) {
     <>
       {/* Header */}
       <div className="border-b border-sidebar-border p-4 flex items-center justify-between">
-        {!collapsed && <h1 className="text-lg font-bold text-sidebar-foreground">FinDash</h1>}
+        {!collapsed && <h1 className="text-lg font-bold text-sidebar-foreground">Bloomberg Replica</h1>}
         <Button
           variant="ghost"
           size="icon"

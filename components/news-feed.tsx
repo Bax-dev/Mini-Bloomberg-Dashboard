@@ -23,24 +23,37 @@ export default function NewsFeeds() {
     setLoading(true)
     setError(null)
     try {
-      // MediaStack API endpoint with access key and filters for business/finance news
-      const params = new URLSearchParams({
-        access_key: "58aecf82c1b2d8312eaf2b10587e02b2",
-        categories: "business",
-        languages: "en",
-        countries: "us",
-        limit: "5",
-        sort: "published_desc",
-      })
-
-      const response = await fetch(`http://api.mediastack.com/v1/news?${params.toString()}`)
+      // Try using Next.js API route first (avoids CORS issues)
+      let apiUrl = "/api/news"
       
-      if (!response.ok) throw new Error("Failed to fetch news")
+      console.log("Fetching news from API route:", apiUrl)
+      
+      const response = await fetch(apiUrl, {
+        method: "GET",
+        headers: {
+          "Accept": "application/json",
+        },
+      })
+      
+      console.log("Response status:", response.status, response.statusText)
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: "Unknown error" }))
+        console.error("API Error:", errorData)
+        throw new Error(errorData.error || `Failed to fetch news: ${response.status}`)
+      }
       
       const data = await response.json()
+      console.log("API Response:", data)
+      
+      // Check for API error in response
+      if (data.error) {
+        console.error("MediaStack API Error:", data.error)
+        throw new Error(data.error)
+      }
       
       // MediaStack returns data in a 'data' array
-      if (data.data && Array.isArray(data.data)) {
+      if (data.data && Array.isArray(data.data) && data.data.length > 0) {
         const newsItems: Article[] = data.data.map((item: {
           title?: string
           description?: string
@@ -56,12 +69,18 @@ export default function NewsFeeds() {
           image: item.image,
         }))
         
+        console.log("Parsed news items:", newsItems.length)
         setArticles(newsItems)
+        setError(null)
       } else {
-        throw new Error("Invalid response format")
+        console.warn("No data in response or empty array")
+        throw new Error("No news articles found")
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error fetching news")
+      console.error("Error fetching news:", err)
+      const errorMessage = err instanceof Error ? err.message : "Error fetching news"
+      setError(errorMessage)
+      
       // Fallback to demo data if API fails
       setArticles([
         {
@@ -114,9 +133,10 @@ export default function NewsFeeds() {
         </div>
       </div>
 
-      {error && !articles.length && (
+      {error && (
         <div className="p-3 bg-destructive/10 border border-destructive rounded-lg">
-          <p className="text-xs text-destructive">Using demo news data</p>
+          <p className="text-xs text-destructive font-medium mb-1">Error: {error}</p>
+          <p className="text-xs text-muted-foreground">Showing demo news data</p>
         </div>
       )}
 
