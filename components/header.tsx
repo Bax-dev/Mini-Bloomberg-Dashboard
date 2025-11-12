@@ -23,11 +23,11 @@ export default function Header({ onMenuClick }: HeaderProps) {
               <Menu className="w-5 h-5" />
               <span className="sr-only">Toggle menu</span>
             </Button>
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary flex items-center justify-center flex-shrink-0">
+            {/* <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary flex items-center justify-center flex-shrink-0">
               <span className="text-xs sm:text-sm font-bold text-primary-foreground">
                 ₿
               </span>
-            </div>
+            </div> */}
             <h1 className="text-xl sm:text-2xl font-bold text-foreground truncate">
               Bloomberg Replica
             </h1>
