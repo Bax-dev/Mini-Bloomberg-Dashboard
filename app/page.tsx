@@ -8,6 +8,7 @@ import NewsFeeds from "@/components/news-feed"
 
 export default function Home() {
   const [mounted, setMounted] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   useEffect(() => {
     setMounted(true)
@@ -17,10 +18,10 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen bg-background overflow-hidden">
-      <Sidebar />
+      <Sidebar open={sidebarOpen} onOpenChange={setSidebarOpen} />
 
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <Header />
+        <Header onMenuClick={() => setSidebarOpen(true)} />
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8">
             {/* Market Overview Section */}
